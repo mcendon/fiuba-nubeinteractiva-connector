@@ -31,7 +31,7 @@ public class App {
 					}
 				});
 		GenericUrl url = new GenericUrl(
-				"https://api.facebook.com/method/fql.query?format=json&query=select%20like_count%20from%20link_stat%20WHERE%20url%20%3D%27www.facebook.com/" + site + "%27");
+				"http://api.facebook.com/method/fql.query?format=json&query=select%20like_count%20from%20link_stat%20WHERE%20url%20%3D%27www.facebook.com/" + site + "%27");
 		HttpRequest request = requestFactory.buildGetRequest(url);
 		while (true) {
 			Feed[] feed = request.execute().parseAs(Feed[].class);
