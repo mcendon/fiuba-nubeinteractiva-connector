@@ -23,6 +23,7 @@ public class App {
 	}
 
 	private static void runWithFacebookSite(String site) throws Exception {
+		Integer lastLikeCount = null;
 		HttpRequestFactory requestFactory = HTTP_TRANSPORT
 				.createRequestFactory(new HttpRequestInitializer() {
 					public void initialize(HttpRequest request)
@@ -36,6 +37,15 @@ public class App {
 		while (true) {
 			Feed[] feed = request.execute().parseAs(Feed[].class);
 			System.out.println(site + " contador Me gusta: " + feed[0].likeCount);
+			if (lastLikeCount != null) {
+				int likeDiff = feed[0].likeCount - lastLikeCount;
+				if (likeDiff > 0) {
+					GenericUrl mapperUrl = new GenericUrl("http://localhost:5000/facebook/like/" + likeDiff);
+					requestFactory.buildGetRequest(mapperUrl).execute();
+				}
+			}
+			lastLikeCount = feed[0].likeCount;
+			
 			Thread.sleep(1000);
 		}
 	}
