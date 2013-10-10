@@ -1,5 +1,10 @@
 package org.tedxuba.social.events;
 
-public class FacebookEventListener extends SocialEventListener {
+public abstract class FacebookEventListener extends SocialEventListener {
+
+	@Override
+	public String getSocialNetworkName() {
+		return "facebook";
+	}
 
 }

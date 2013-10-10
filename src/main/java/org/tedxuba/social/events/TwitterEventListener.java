@@ -1,5 +1,10 @@
 package org.tedxuba.social.events;
 
-public class TwitterEventListener extends SocialEventListener {
+public abstract class TwitterEventListener extends SocialEventListener {
+
+	@Override
+	public String getSocialNetworkName() {
+		return "twitter";
+	}
 
 }
