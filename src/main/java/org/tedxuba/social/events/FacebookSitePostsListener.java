@@ -17,6 +17,7 @@ public class FacebookSitePostsListener extends FacebookEventListener {
 	private static final String POSTS_SHARES_EVENT = "posts-shares";
 
 	private String site;
+	private long pageId;
 
 	public static class PageFeed {
 		@Key("page_id")
@@ -44,6 +45,7 @@ public class FacebookSitePostsListener extends FacebookEventListener {
 	
 	public FacebookSitePostsListener(String site) {
 		this.site = site;
+		this.pageId = -1;
 	}
 	
 	@Override
@@ -52,14 +54,40 @@ public class FacebookSitePostsListener extends FacebookEventListener {
 				POSTS_COMMENTS_EVENT,
 				POSTS_SHARES_EVENT});
 	}
+	
+	private long getPageId(HttpRequestFactory requestFactory)
+			throws IOException {
+		GenericUrl url = new GenericUrl("http://api.facebook.com/method/fql.query?format=json&query=SELECT%20page_id%20from%20page%20where%20username%20%3D%20%22" + site + "%22");
+		HttpRequest request = requestFactory.buildGetRequest(url);
+		PageFeed[] pageFeeds = request.execute().parseAs(PageFeed[].class);
+		long pageId = -1;
+		if (pageFeeds.length > 0)
+		{
+			pageId = pageFeeds[0].pageId;
+		}
+		return pageId;
+	}
+
+	private String  getAccessToken(HttpRequestFactory requestFactory) 
+			throws IOException {
+		//App Access Token - request by graph api (non-native app)
+		GenericUrl url = new GenericUrl("https://graph.facebook.com/oauth/access_token?client_id=152513334958943&client_secret=8a7c74b36898136c791d73bdccb06976&grant_type=client_credentials");
+		HttpRequest request = requestFactory.buildGetRequest(url);
+		String accessToken =  request.execute().parseAsString().substring(13).replace("|", "%7C");
+		//TODO: token used (review User Access Token) 
+		return accessToken;
+	}	
 
 	@Override
 	public String getRequestUrl(HttpRequestFactory requestFactory) {
-		long pageId = -1;
 		String accessToken = null;
 		try 
 		{
-			pageId = getPageId(requestFactory);
+			if (pageId <= 0)
+			{
+				pageId = getPageId(requestFactory);
+			}
+			//TODO: avoid new access token on each call
 			accessToken  = getAccessToken(requestFactory);
 		} 
 		catch (IOException iOException) 
@@ -73,29 +101,6 @@ public class FacebookSitePostsListener extends FacebookEventListener {
 			requestUrl = "https://api.facebook.com/method/fql.query?format=json&query=SELECT%20comments.count,share_count,likes.count,likes.can_like%20FROM%20stream%20WHERE%20source_id%3D" + pageId + "&access_token=" + accessToken;
 		}
 		return requestUrl;
-	}
-
-	private String  getAccessToken(HttpRequestFactory requestFactory) 
-			throws IOException {
-		//App Access Token - request by graph api (non-native app)
-		GenericUrl url = new GenericUrl("https://graph.facebook.com/oauth/access_token?client_id=152513334958943&client_secret=8a7c74b36898136c791d73bdccb06976&grant_type=client_credentials");
-		HttpRequest request = requestFactory.buildGetRequest(url);
-		String accessToken =  request.execute().parseAsString().substring(13).replace("|", "%7C");
-		//TODO: token used (review User Access Token) 
-		return accessToken;
-	}	
-
-	private long getPageId(HttpRequestFactory requestFactory)
-			throws IOException {
-		GenericUrl url = new GenericUrl("http://api.facebook.com/method/fql.query?format=json&query=SELECT%20page_id%20from%20page%20where%20username%20%3D%20%22" + site + "%22");
-		HttpRequest request = requestFactory.buildGetRequest(url);
-		PageFeed[] pageFeeds = request.execute().parseAs(PageFeed[].class);
-		long pageId = -1;
-		if (pageFeeds.length > 0)
-		{
-			pageId = pageFeeds[0].pageId;
-		}
-		return pageId;
 	}
 
 	@Override
