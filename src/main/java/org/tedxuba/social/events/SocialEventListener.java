@@ -1,6 +1,9 @@
 package org.tedxuba.social.events;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Observable;
 
 import com.google.api.client.http.GenericUrl;
@@ -18,34 +21,33 @@ public abstract class SocialEventListener extends Observable {
 	static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 	static final JsonFactory JSON_FACTORY = new JacksonFactory();
 	
-	private Integer lastCount;
-	private Integer countDiff;
+	private Map<String,Integer> lastCountMap = new HashMap<String, Integer>();
+	private Map<String,Integer> countDiffMap = new HashMap<String, Integer>();
 	
 	public abstract String getSocialNetworkName();
-	public abstract String getEventName();
-	public abstract String getRequestUrl();
+	public abstract List<String> getEventNames();
+	public abstract String getRequestUrl(HttpRequestFactory requestFactory);
 	public abstract void parseResponseAndUpdateCount(HttpResponse response);
 	
-	public void setLastCount(Integer lastCount) {
-		this.lastCount = lastCount;
+	public void setLastCount(String eventName, Integer lastCount) {
+		this.lastCountMap.put(eventName, lastCount);
 	}
 	
-	public Integer getLastCount() {
-		return lastCount;
+	public Integer getLastCount(String eventName) {
+		return lastCountMap.get(eventName);
 	}
 	
-	public Integer getCountDiff() {
-		return countDiff;
+	public Integer getCountDiff(String eventName) {
+		return countDiffMap.get(eventName);
 	}
-	public void setCountDiff(Integer countDiff) {
-		this.countDiff = countDiff;
+	public void setCountDiff(String eventName, Integer countDiff) {
+		this.countDiffMap.put(eventName, countDiff);
 	}
 	
 	public void start() {
 		Thread thread = new Thread(new Runnable() {
 			
 			public void run() {
-				String requestUrl = SocialEventListener.this.getRequestUrl();
 				HttpRequestFactory requestFactory = HTTP_TRANSPORT
 						.createRequestFactory(new HttpRequestInitializer() {
 							public void initialize(HttpRequest request)
@@ -53,6 +55,7 @@ public abstract class SocialEventListener extends Observable {
 								request.setParser(new JsonObjectParser(JSON_FACTORY));
 							}
 						});
+				String requestUrl = SocialEventListener.this.getRequestUrl(requestFactory);
 				GenericUrl url = new GenericUrl(requestUrl);
 				try {
 					HttpRequest request = requestFactory.buildGetRequest(url);
