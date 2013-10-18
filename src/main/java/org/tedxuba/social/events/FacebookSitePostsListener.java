@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestFactory;
@@ -12,6 +15,8 @@ import com.google.api.client.util.Key;
 
 public class FacebookSitePostsListener extends FacebookEventListener {
 
+	private final Logger logger = LoggerFactory.getLogger(FacebookSitePostsListener.class);
+	
 	private static final String POSTS_LIKES_EVENT = "posts-likes";
 	private static final String POSTS_COMMENTS_EVENT = "posts-comments";
 	private static final String POSTS_SHARES_EVENT = "posts-shares";
@@ -92,8 +97,7 @@ public class FacebookSitePostsListener extends FacebookEventListener {
 		} 
 		catch (IOException iOException) 
 		{
-			// TODO: use logger
-			System.out.println("exception during request of parameters for url: " + iOException.getMessage());
+			logger.error("Exception during request of parameters for url: " + iOException.getMessage());
 		}
 		String requestUrl = null;
 		if ( (pageId > 0 ) && (accessToken != null) )
@@ -124,8 +128,7 @@ public class FacebookSitePostsListener extends FacebookEventListener {
 		} 
 		catch (IOException iOException) 
 		{
-			//TODO: logging of problem (with response string)
-			iOException.printStackTrace();
+			logger.error("Exception parsing response: " + iOException.getMessage());
 		}		
 	}
 	

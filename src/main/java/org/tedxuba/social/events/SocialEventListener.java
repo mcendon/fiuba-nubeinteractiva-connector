@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Observable;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestFactory;
@@ -18,6 +21,8 @@ import com.google.api.client.json.JsonObjectParser;
 import com.google.api.client.json.jackson2.JacksonFactory;
 
 public abstract class SocialEventListener extends Observable {
+	private final Logger logger = LoggerFactory.getLogger(SocialEventListener.class);
+	
 	static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 	static final JsonFactory JSON_FACTORY = new JacksonFactory();
 	
@@ -61,13 +66,14 @@ public abstract class SocialEventListener extends Observable {
 					HttpRequest request = requestFactory.buildGetRequest(url);
 				
 					while (true) {
+						logger.debug("Requesting to " + url.toString());
 						HttpResponse response = request.execute();
 						parseResponseAndUpdateCount(response);
 						
 						Thread.sleep(1000);
 					}
 				} catch (Exception e) {
-					e.printStackTrace();
+					logger.error(e.getMessage());
 				}
 			}
 			

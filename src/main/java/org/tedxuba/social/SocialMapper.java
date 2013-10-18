@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Observable;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.tedxuba.social.events.SocialEventListener;
 
 import com.google.api.client.http.GenericUrl;
@@ -12,6 +14,8 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 
 public class SocialMapper {
+	
+	private final Logger logger = LoggerFactory.getLogger(SocialMapper.class);
 
 	static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 	private HttpRequestFactory requestFactory;
@@ -33,12 +37,12 @@ public class SocialMapper {
 				// TODO: Mapper server IP through parameter
 				GenericUrl mapperUrl = new GenericUrl("http://localhost:5000/" + mapperEvent);
 				try {
+					logger.debug("Sending event to mapper (" + mapperEvent + "): " + mapperUrl.toString());
 					requestFactory.buildGetRequest(mapperUrl).execute();
 				} 
 				catch (IOException iOException) 
 				{
-					//TODO: logging
-					System.out.println("exception during sending event to mapper (" + mapperEvent + "): " + iOException.getMessage());
+					logger.error("Exception during sending event to mapper (" + mapperEvent + "): " + iOException.getMessage());
 				}
 			}
 		}

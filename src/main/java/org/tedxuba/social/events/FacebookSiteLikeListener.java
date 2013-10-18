@@ -4,12 +4,17 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.api.client.http.HttpRequestFactory;
 import com.google.api.client.http.HttpResponse;
 import com.google.api.client.util.Key;
 
 public class FacebookSiteLikeListener extends FacebookEventListener {
 
+	private final Logger logger = LoggerFactory.getLogger(FacebookSiteLikeListener.class);
+	
 	private static final String SITE_LIKE_EVENT = "site-like";
 	
 	private String site;
@@ -48,7 +53,7 @@ public class FacebookSiteLikeListener extends FacebookEventListener {
 				setLastCount(SITE_LIKE_EVENT, feed[0].likeCount);
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}		
 	}
 
