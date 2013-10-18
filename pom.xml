@@ -91,6 +91,17 @@
 			<artifactId>google-http-client-jackson2</artifactId>
 			<version>${project.http.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.5</version>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.7.5</version>
+		</dependency>
 	</dependencies>
 	<properties>
 		<project.http.version>1.17.0-rc</project.http.version>
