@@ -6,12 +6,15 @@ import java.util.Observer;
 import org.tedxuba.social.events.FacebookSiteLikeListener;
 import org.tedxuba.social.events.FacebookSitePostsListener;
 import org.tedxuba.social.events.SocialEventListener;
+import org.tedxuba.social.events.TwitterTermsEventListener;
 
 public class SocialController implements Observer {
 
 	//TODO: parameter ?
 	private static final String FACEBOOK_SITE_NAME = "TEDxUBA"; //official site
 //	private static final String FACEBOOK_SITE_NAME = "tedxubaTest"; //test site
+	
+	private static final String TWITTER_TERMS = "SpriteUrbanTour, lanata";
 	
 	private SocialMapper mapper;
 	
@@ -25,6 +28,10 @@ public class SocialController implements Observer {
 		SocialEventListener fbSitePostsListener = new FacebookSitePostsListener(FACEBOOK_SITE_NAME);
 		fbSitePostsListener.addObserver(this);
 		fbSitePostsListener.start();
+		
+		TwitterTermsEventListener twtTermsEventListener = new TwitterTermsEventListener(TWITTER_TERMS);
+		twtTermsEventListener.addObserver(this);
+		twtTermsEventListener.start();
 		
 		// TODO: add the rest of social event listeners
 	}

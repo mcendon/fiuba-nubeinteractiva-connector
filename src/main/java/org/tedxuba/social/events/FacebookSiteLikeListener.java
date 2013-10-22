@@ -17,15 +17,13 @@ public class FacebookSiteLikeListener extends FacebookEventListener {
 	
 	private static final String SITE_LIKE_EVENT = "site-like";
 	
-	private String site;
-
 	public static class Feed {
 		@Key("like_count")
 		public int likeCount;
 	}
 	
 	public FacebookSiteLikeListener(String site) {
-		this.site = site;
+		super(site);
 	}
 	
 	@Override
@@ -35,7 +33,7 @@ public class FacebookSiteLikeListener extends FacebookEventListener {
 
 	@Override
 	public String getRequestUrl(HttpRequestFactory requestFactory) {
-		return "http://api.facebook.com/method/fql.query?format=json&query=select%20like_count%20from%20link_stat%20WHERE%20url%20%3D%27www.facebook.com/" + site + "%27";
+		return "http://api.facebook.com/method/fql.query?format=json&query=select%20like_count%20from%20link_stat%20WHERE%20url%20%3D%27www.facebook.com/" + getSite() + "%27";
 	}
 
 	@Override
@@ -52,8 +50,8 @@ public class FacebookSiteLikeListener extends FacebookEventListener {
 			} else {
 				setLastCount(SITE_LIKE_EVENT, feed[0].likeCount);
 			}
-		} catch (IOException e) {
-			logger.error(e.getMessage());
+		} catch (IOException iOException) {
+			logger.error("Exception parsing response: " + iOException.getMessage());
 		}		
 	}
 

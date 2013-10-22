@@ -21,7 +21,6 @@ public class FacebookSitePostsListener extends FacebookEventListener {
 	private static final String POSTS_COMMENTS_EVENT = "posts-comments";
 	private static final String POSTS_SHARES_EVENT = "posts-shares";
 
-	private String site;
 	private long pageId;
 
 	public static class PageFeed {
@@ -49,7 +48,7 @@ public class FacebookSitePostsListener extends FacebookEventListener {
 	}
 	
 	public FacebookSitePostsListener(String site) {
-		this.site = site;
+		super(site);
 		this.pageId = -1;
 	}
 	
@@ -62,7 +61,7 @@ public class FacebookSitePostsListener extends FacebookEventListener {
 	
 	private long getPageId(HttpRequestFactory requestFactory)
 			throws IOException {
-		GenericUrl url = new GenericUrl("http://api.facebook.com/method/fql.query?format=json&query=SELECT%20page_id%20from%20page%20where%20username%20%3D%20%22" + site + "%22");
+		GenericUrl url = new GenericUrl("http://api.facebook.com/method/fql.query?format=json&query=SELECT%20page_id%20from%20page%20where%20username%20%3D%20%22" + getSite() + "%22");
 		HttpRequest request = requestFactory.buildGetRequest(url);
 		PageFeed[] pageFeeds = request.execute().parseAs(PageFeed[].class);
 		long pageId = -1;
