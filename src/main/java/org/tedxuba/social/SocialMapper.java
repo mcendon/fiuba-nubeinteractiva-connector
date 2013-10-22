@@ -19,8 +19,11 @@ public class SocialMapper {
 
 	static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 	private HttpRequestFactory requestFactory;
+
+	private String baseUrl;
 	
-	public SocialMapper() {
+	public SocialMapper(String baseUrl) {
+		this.baseUrl = baseUrl;
 		this.requestFactory = HTTP_TRANSPORT.createRequestFactory();
 	}
 	
@@ -34,8 +37,7 @@ public class SocialMapper {
 			if (count > 0)
 			{
 				String mapperEvent = socialNetworkName + "/" + eventName + "/" + count;
-				// TODO: Mapper server IP through parameter
-				GenericUrl mapperUrl = new GenericUrl("http://localhost:5000/" + mapperEvent);
+				GenericUrl mapperUrl = new GenericUrl(this.baseUrl + mapperEvent);
 				try {
 					logger.debug("Sending event to mapper (" + mapperEvent + "): " + mapperUrl.toString());
 					requestFactory.buildGetRequest(mapperUrl).execute();

@@ -10,16 +10,15 @@ import org.tedxuba.social.events.TwitterTermsEventListener;
 
 public class SocialController implements Observer {
 
-	//TODO: parameter ?
-	private static final String FACEBOOK_SITE_NAME = "TEDxUBA"; //official site
-//	private static final String FACEBOOK_SITE_NAME = "tedxubaTest"; //test site
-	
-	private static final String TWITTER_TERMS = "SpriteUrbanTour, lanata";
+	private static final String FACEBOOK_SITE_NAME = "TEDxUBA";
+	private static final String TWITTER_TERMS = "TEDxUBA";
+
+	private static final String mapperUrl = "http://localhost:5000/";
 	
 	private SocialMapper mapper;
 	
 	public SocialController() {
-		this.mapper = new SocialMapper();
+		this.mapper = new SocialMapper(mapperUrl);
 		
 		SocialEventListener fbSiteLikeListener = new FacebookSiteLikeListener(FACEBOOK_SITE_NAME);
 		fbSiteLikeListener.addObserver(this);
