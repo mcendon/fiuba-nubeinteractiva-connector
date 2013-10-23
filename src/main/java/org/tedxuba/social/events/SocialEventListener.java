@@ -67,10 +67,18 @@ public abstract class SocialEventListener extends Observable {
 				
 					while (true) {
 						logger.debug("Requesting to " + url.toString());
-						HttpResponse response = request.execute();
-						parseResponseAndUpdateCount(response);
-						
-						Thread.sleep(1000);
+						HttpResponse response;
+						try {
+							response = request.execute();
+							parseResponseAndUpdateCount(response);
+							Thread.sleep(1000);
+						} 
+						catch (IOException iOException) {
+							logger.warn("Exception during request execution", iOException);
+						}
+						catch (InterruptedException interruptedException) {
+							logger.warn("Exception during sleep", interruptedException);
+						}
 					}
 				} catch (Exception e) {
 					logger.error(e.getMessage());
