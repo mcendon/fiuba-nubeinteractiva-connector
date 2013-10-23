@@ -54,10 +54,13 @@ public class TwitterTermsListener extends TwitterEventListener {
 			try {
 				String msg;
 				msg = msgQueue.take();
-				logger.debug(msg);
-				setCountDiff(TERM_EVENT, 1);
-				this.setChanged();
-				this.notifyObservers();
+				// Avoid self logout events
+				if (!msg.contains("admin logout")) {
+					logger.debug(msg);
+					setCountDiff(TERM_EVENT, 1);
+					this.setChanged();
+					this.notifyObservers();
+				}
 			} catch (Exception e) {
 				logger.error(e.getMessage());
 			}
