@@ -1,6 +1,8 @@
-package org.tedxuba.social.events;
+package org.tedxuba.social.events.facebook;
 
-public abstract class FacebookEventListener extends SocialEventListener {
+import org.tedxuba.social.events.SocialEventWithUrlListener;
+
+public abstract class FacebookEventListener extends SocialEventWithUrlListener {
 
 	private String site;
 

@@ -1,4 +1,6 @@
-package org.tedxuba.social.events;
+package org.tedxuba.social.events.twitter;
+
+import org.tedxuba.social.events.SocialEventListener;
 
 public abstract class TwitterEventListener extends SocialEventListener {
 

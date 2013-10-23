@@ -5,10 +5,10 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
-import org.tedxuba.social.events.FacebookSiteLikeListener;
-import org.tedxuba.social.events.FacebookSitePostsListener;
 import org.tedxuba.social.events.SocialEventListener;
-import org.tedxuba.social.events.TwitterTermsEventListener;
+import org.tedxuba.social.events.facebook.FacebookSiteLikeListener;
+import org.tedxuba.social.events.facebook.FacebookSitePostsListener;
+import org.tedxuba.social.events.twitter.TwitterTermsListener;
 
 public class SocialController implements Observer {
 
@@ -36,7 +36,7 @@ public class SocialController implements Observer {
 		fbSitePostsListener.addObserver(this);
 		this.eventListeners.add(fbSitePostsListener);
 		
-		TwitterTermsEventListener twtTermsEventListener = new TwitterTermsEventListener(TWITTER_TERMS);
+		TwitterTermsListener twtTermsEventListener = new TwitterTermsListener(TWITTER_TERMS);
 		twtTermsEventListener.addObserver(this);
 		this.eventListeners.add(twtTermsEventListener);
 		

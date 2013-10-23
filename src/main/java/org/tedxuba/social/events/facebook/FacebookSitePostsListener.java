@@ -1,4 +1,4 @@
-package org.tedxuba.social.events;
+package org.tedxuba.social.events.facebook;
 
 import java.io.IOException;
 import java.util.Arrays;
