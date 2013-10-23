@@ -14,20 +14,19 @@ public class SocialController implements Observer {
 
 	private static final String FACEBOOK_SITE_NAME = "TEDxUBA";
 	private static final String TWITTER_TERMS = "TEDxUBA";
-
-	private static final String mapperUrl = "http://localhost:5000/";
 	
 	private SocialMapper mapper;
 	private List<SocialEventListener> eventListeners;
 	
-	public SocialController() {
-		this.mapper = new SocialMapper(mapperUrl);
-		this.eventListeners = new ArrayList<SocialEventListener>();
+	public SocialController(SocialMapper mapper) {
+		this.mapper = mapper;
 		
 		setupEventListeners();
 	}
 	
 	private void setupEventListeners() {
+		this.eventListeners = new ArrayList<SocialEventListener>();
+		
 		SocialEventListener fbSiteLikeListener = new FacebookSiteLikeListener(FACEBOOK_SITE_NAME);
 		fbSiteLikeListener.addObserver(this);
 		this.eventListeners.add(fbSiteLikeListener);
@@ -36,7 +35,7 @@ public class SocialController implements Observer {
 		fbSitePostsListener.addObserver(this);
 		this.eventListeners.add(fbSitePostsListener);
 		
-		TwitterTermsListener twtTermsEventListener = new TwitterTermsListener(TWITTER_TERMS);
+		SocialEventListener twtTermsEventListener = new TwitterTermsListener(TWITTER_TERMS);
 		twtTermsEventListener.addObserver(this);
 		this.eventListeners.add(twtTermsEventListener);
 		
