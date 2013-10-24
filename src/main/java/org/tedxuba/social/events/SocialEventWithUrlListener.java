@@ -25,6 +25,16 @@ public abstract class SocialEventWithUrlListener extends SocialEventListener {
 	public abstract String getRequestUrl(HttpRequestFactory requestFactory);
 	public abstract void parseResponseAndUpdateCount(HttpResponse response);
 	
+	private String site;
+
+	public SocialEventWithUrlListener(String site) {
+		this.site = site;
+	}
+	
+	public String getSite() {
+		return site;
+	}
+	
 	public void start() {
 		Thread thread = new Thread(new Runnable() {
 			
@@ -49,15 +59,12 @@ public abstract class SocialEventWithUrlListener extends SocialEventListener {
 							parseResponseAndUpdateCount(response);
 							Thread.sleep(1000);
 						} 
-						catch (IOException iOException) {
-							logger.warn("Exception during request execution", iOException);
-						}
-						catch (InterruptedException interruptedException) {
-							logger.warn("Exception during sleep", interruptedException);
+						catch (Exception e) {
+							logger.error(e.toString());
 						}
 					}
 				} catch (Exception e) {
-					logger.error(e.getMessage());
+					logger.error(e.toString());
 				}
 			}
 			

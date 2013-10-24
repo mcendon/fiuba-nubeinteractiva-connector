@@ -125,9 +125,9 @@ public class FacebookSitePostsListener extends FacebookEventListener {
 				this.notifyObservers();
 			}
 		} 
-		catch (IOException iOException) 
+		catch (Exception e) 
 		{
-			logger.error("Exception parsing response: " + iOException.getMessage());
+			logger.error("Exception parsing response: " + e.toString());
 		}		
 	}
 	

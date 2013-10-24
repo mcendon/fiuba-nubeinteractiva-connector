@@ -9,11 +9,13 @@ import org.tedxuba.social.events.SocialEventListener;
 import org.tedxuba.social.events.facebook.FacebookSiteLikeListener;
 import org.tedxuba.social.events.facebook.FacebookSitePostsListener;
 import org.tedxuba.social.events.twitter.TwitterTermsListener;
+import org.tedxuba.social.events.youtube.YoutubeSubscribersListener;
 
 public class SocialController implements Observer {
 
 	private static final String FACEBOOK_SITE_NAME = "TEDxUBA";
 	private static final String TWITTER_TERMS = "TEDxUBA";
+	private static final String YOUTUBE_SITE_NAME = "TEDxUBA";
 	
 	private SocialMapper mapper;
 	private List<SocialEventListener> eventListeners;
@@ -27,17 +29,21 @@ public class SocialController implements Observer {
 	private void setupEventListeners() {
 		this.eventListeners = new ArrayList<SocialEventListener>();
 		
-		SocialEventListener fbSiteLikeListener = new FacebookSiteLikeListener(FACEBOOK_SITE_NAME);
-		fbSiteLikeListener.addObserver(this);
-		this.eventListeners.add(fbSiteLikeListener);
+//		SocialEventListener fbSiteLikeListener = new FacebookSiteLikeListener(FACEBOOK_SITE_NAME);
+//		fbSiteLikeListener.addObserver(this);
+//		this.eventListeners.add(fbSiteLikeListener);
+//		
+//		SocialEventListener fbSitePostsListener = new FacebookSitePostsListener(FACEBOOK_SITE_NAME);
+//		fbSitePostsListener.addObserver(this);
+//		this.eventListeners.add(fbSitePostsListener);
+//		
+//		SocialEventListener twtTermsListener = new TwitterTermsListener(TWITTER_TERMS);
+//		twtTermsListener.addObserver(this);
+//		this.eventListeners.add(twtTermsListener);
 		
-		SocialEventListener fbSitePostsListener = new FacebookSitePostsListener(FACEBOOK_SITE_NAME);
-		fbSitePostsListener.addObserver(this);
-		this.eventListeners.add(fbSitePostsListener);
-		
-		SocialEventListener twtTermsEventListener = new TwitterTermsListener(TWITTER_TERMS);
-		twtTermsEventListener.addObserver(this);
-		this.eventListeners.add(twtTermsEventListener);
+		SocialEventListener ytSubscribersListener = new YoutubeSubscribersListener(YOUTUBE_SITE_NAME);
+		ytSubscribersListener.addObserver(this);
+		this.eventListeners.add(ytSubscribersListener);
 		
 		// TODO: add the rest of social event listeners
 	}

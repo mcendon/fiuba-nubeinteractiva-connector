@@ -1,6 +1,5 @@
 package org.tedxuba.social.events.facebook;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -50,8 +49,8 @@ public class FacebookSiteLikeListener extends FacebookEventListener {
 			} else {
 				setLastCount(SITE_LIKE_EVENT, feed[0].likeCount);
 			}
-		} catch (IOException iOException) {
-			logger.error("Exception parsing response: " + iOException.getMessage());
+		} catch (Exception e) {
+			logger.error("Exception parsing response: " + e.toString());
 		}		
 	}
 

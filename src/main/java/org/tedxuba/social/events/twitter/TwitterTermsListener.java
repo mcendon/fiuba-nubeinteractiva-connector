@@ -62,7 +62,7 @@ public class TwitterTermsListener extends TwitterEventListener {
 					this.notifyObservers();
 				}
 			} catch (Exception e) {
-				logger.error(e.getMessage());
+				logger.error(e.toString());
 			}
 		}
 	}
