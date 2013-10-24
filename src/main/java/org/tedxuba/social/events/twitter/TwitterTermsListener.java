@@ -31,40 +31,46 @@ public class TwitterTermsListener extends TwitterEventListener {
 
 	@Override
 	public void start() {
-		BlockingQueue<String> msgQueue = new LinkedBlockingQueue<String>(100000);
-
-		StatusesFilterEndpoint filterEndpoint = new StatusesFilterEndpoint();
-		List<String> terms = Lists.newArrayList(this.twitterTerms);
-		filterEndpoint.trackTerms(terms);
-
-		Authentication hosebirdAuth = new OAuth1("aeIBIUf1vVu4PWNvxlJVYg",
-				"BRoMmIAozI0Hi95D344c1tk6JdtoDnkiKtS7weyw",
-				"1915420819-XXj2cwXtUoSnA1E0ZQvSHg55BQYfZ2b8vBh3nUY",
-				"WE0tt69igf45tXeT5peyiCQTPj03cv5TJFpqKHq3w");
-
-		ClientBuilder builder = new ClientBuilder().name("Hosebird-Client-01")
-				.hosts(HttpHosts.STREAM_HOST).authentication(hosebirdAuth)
-				.endpoint(filterEndpoint)
-				.processor(new StringDelimitedProcessor(msgQueue));
-
-		Client hosebirdClient = builder.build();
-		hosebirdClient.connect();
-
-		while (!hosebirdClient.isDone()) {
-			try {
-				String msg;
-				msg = msgQueue.take();
-				// Avoid self logout events
-				if (!msg.contains("admin logout")) {
-					logger.debug(msg);
-					setCountDiff(TERM_EVENT, 1);
-					this.setChanged();
-					this.notifyObservers();
+		Thread thread = new Thread(new Runnable() {
+			
+			public void run() {
+				BlockingQueue<String> msgQueue = new LinkedBlockingQueue<String>(100000);
+		
+				StatusesFilterEndpoint filterEndpoint = new StatusesFilterEndpoint();
+				List<String> terms = Lists.newArrayList(TwitterTermsListener.this.twitterTerms);
+				filterEndpoint.trackTerms(terms);
+		
+				Authentication hosebirdAuth = new OAuth1("aeIBIUf1vVu4PWNvxlJVYg",
+						"BRoMmIAozI0Hi95D344c1tk6JdtoDnkiKtS7weyw",
+						"1915420819-XXj2cwXtUoSnA1E0ZQvSHg55BQYfZ2b8vBh3nUY",
+						"WE0tt69igf45tXeT5peyiCQTPj03cv5TJFpqKHq3w");
+		
+				ClientBuilder builder = new ClientBuilder().name("Hosebird-Client-01")
+						.hosts(HttpHosts.STREAM_HOST).authentication(hosebirdAuth)
+						.endpoint(filterEndpoint)
+						.processor(new StringDelimitedProcessor(msgQueue));
+		
+				Client hosebirdClient = builder.build();
+				hosebirdClient.connect();
+		
+				while (!hosebirdClient.isDone()) {
+					try {
+						String msg;
+						msg = msgQueue.take();
+						// Avoid self logout events
+						if (!msg.contains("admin logout")) {
+							logger.debug(msg);
+							setCountDiff(TERM_EVENT, 1);
+							TwitterTermsListener.this.setChanged();
+							TwitterTermsListener.this.notifyObservers();
+						}
+					} catch (Exception e) {
+						logger.error(e.toString());
+					}
 				}
-			} catch (Exception e) {
-				logger.error(e.toString());
 			}
-		}
+		});
+		thread.start();
 	}
 
 	@Override

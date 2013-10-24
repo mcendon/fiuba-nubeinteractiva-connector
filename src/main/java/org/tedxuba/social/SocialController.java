@@ -29,17 +29,17 @@ public class SocialController implements Observer {
 	private void setupEventListeners() {
 		this.eventListeners = new ArrayList<SocialEventListener>();
 		
-//		SocialEventListener fbSiteLikeListener = new FacebookSiteLikeListener(FACEBOOK_SITE_NAME);
-//		fbSiteLikeListener.addObserver(this);
-//		this.eventListeners.add(fbSiteLikeListener);
-//		
-//		SocialEventListener fbSitePostsListener = new FacebookSitePostsListener(FACEBOOK_SITE_NAME);
-//		fbSitePostsListener.addObserver(this);
-//		this.eventListeners.add(fbSitePostsListener);
-//		
-//		SocialEventListener twtTermsListener = new TwitterTermsListener(TWITTER_TERMS);
-//		twtTermsListener.addObserver(this);
-//		this.eventListeners.add(twtTermsListener);
+		SocialEventListener fbSiteLikeListener = new FacebookSiteLikeListener(FACEBOOK_SITE_NAME);
+		fbSiteLikeListener.addObserver(this);
+		this.eventListeners.add(fbSiteLikeListener);
+		
+		SocialEventListener fbSitePostsListener = new FacebookSitePostsListener(FACEBOOK_SITE_NAME);
+		fbSitePostsListener.addObserver(this);
+		this.eventListeners.add(fbSitePostsListener);
+		
+		SocialEventListener twtTermsListener = new TwitterTermsListener(TWITTER_TERMS);
+		twtTermsListener.addObserver(this);
+		this.eventListeners.add(twtTermsListener);
 		
 		SocialEventListener ytSubscribersListener = new YoutubeSubscribersListener(YOUTUBE_SITE_NAME);
 		ytSubscribersListener.addObserver(this);
