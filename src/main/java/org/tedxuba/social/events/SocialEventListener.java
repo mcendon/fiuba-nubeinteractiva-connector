@@ -21,7 +21,11 @@ public abstract class SocialEventListener extends Observable {
 	}
 	
 	public Integer getCountDiff(String eventName) {
-		return countDiffMap.get(eventName);
+		if (countDiffMap.containsKey(eventName)) {
+			return countDiffMap.get(eventName);
+		}
+		
+		return 0;
 	}
 	
 	public void setCountDiff(String eventName, Integer countDiff) {
