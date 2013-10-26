@@ -14,7 +14,7 @@ import org.tedxuba.social.events.youtube.YoutubeSubscribersListener;
 public class SocialController implements Observer {
 
 	private static final String FACEBOOK_SITE_NAME = "TEDxUBA";
-	private static final String TWITTER_TERMS = "TEDxUBA";
+	private static final String TWITTER_TERM = "TEDxUBA";
 	private static final String YOUTUBE_SITE_NAME = "TEDxUBA";
 	
 	private SocialMapper mapper;
@@ -37,7 +37,7 @@ public class SocialController implements Observer {
 		fbSitePostsListener.addObserver(this);
 		this.eventListeners.add(fbSitePostsListener);
 		
-		SocialEventListener twtTermsListener = new TwitterTermsListener(TWITTER_TERMS);
+		SocialEventListener twtTermsListener = new TwitterTermsListener(TWITTER_TERM);
 		twtTermsListener.addObserver(this);
 		this.eventListeners.add(twtTermsListener);
 		

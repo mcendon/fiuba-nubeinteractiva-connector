@@ -1,5 +1,6 @@
 package org.tedxuba.social.events.twitter;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
@@ -8,7 +9,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.Lists;
+import com.google.api.client.json.JsonParser;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.util.Key;
 import com.twitter.hbc.ClientBuilder;
 import com.twitter.hbc.core.Client;
 import com.twitter.hbc.core.HttpHosts;
@@ -21,14 +24,26 @@ public class TwitterTermsListener extends TwitterEventListener {
 	private final Logger logger = LoggerFactory
 			.getLogger(TwitterTermsListener.class);
 
-	private String twitterTerms;
+	private List<String> twitterTerms;
 
 	private static final String TERM_EVENT = "term";
+	protected static final String HASHTAG_EVENT = "hashtag";
+	protected static final String MENTION_EVENT = "mention";
 
-	public TwitterTermsListener(String twitterTerms) {
+	public TwitterTermsListener(List<String> twitterTerms) {
 		this.twitterTerms = twitterTerms;
 	}
+	
+	public TwitterTermsListener(String twitterTerm) {
+		this.twitterTerms = new ArrayList<String>();
+		this.twitterTerms.add(twitterTerm);
+	}
 
+	public static class TwitterFeed {
+		@Key
+		public String text;
+	}
+	
 	@Override
 	public void start() {
 		Thread thread = new Thread(new Runnable() {
@@ -37,8 +52,7 @@ public class TwitterTermsListener extends TwitterEventListener {
 				BlockingQueue<String> msgQueue = new LinkedBlockingQueue<String>(100000);
 		
 				StatusesFilterEndpoint filterEndpoint = new StatusesFilterEndpoint();
-				List<String> terms = Lists.newArrayList(TwitterTermsListener.this.twitterTerms);
-				filterEndpoint.trackTerms(terms);
+				filterEndpoint.trackTerms(TwitterTermsListener.this.twitterTerms);
 		
 				Authentication hosebirdAuth = new OAuth1("aeIBIUf1vVu4PWNvxlJVYg",
 						"BRoMmIAozI0Hi95D344c1tk6JdtoDnkiKtS7weyw",
@@ -60,9 +74,30 @@ public class TwitterTermsListener extends TwitterEventListener {
 						// Avoid self logout events
 						if (!msg.contains("admin logout")) {
 							logger.debug(msg);
-							setCountDiff(TERM_EVENT, 1);
+							
+							JsonParser jsonParser = JacksonFactory.getDefaultInstance().createJsonParser(msg);
+							TwitterFeed tf = jsonParser.parse(TwitterFeed.class);
+							jsonParser.close();
+							for (String twitterTerm : TwitterTermsListener.this.twitterTerms) {
+								if (tf.text.toLowerCase().contains(twitterTerm.toLowerCase())) {
+									if (msg.toLowerCase().contains("#" + twitterTerm.toLowerCase())) {
+										setCountDiff(HASHTAG_EVENT, 1);	
+									} 
+									if (tf.text.toLowerCase().contains("@" + twitterTerm.toLowerCase())) {
+										setCountDiff(MENTION_EVENT, 1);
+									}
+									String newstring = tf.text.toLowerCase().replaceAll("#"+twitterTerm.toLowerCase(), "");
+									newstring = newstring.replaceAll("@"+twitterTerm.toLowerCase(), "");
+									if (newstring.contains(twitterTerm.toLowerCase())) {
+										setCountDiff(TERM_EVENT, 1);
+									}
+								}
+							}
 							TwitterTermsListener.this.setChanged();
 							TwitterTermsListener.this.notifyObservers();
+							setCountDiff(HASHTAG_EVENT, 0);	
+							setCountDiff(MENTION_EVENT, 0);
+							setCountDiff(TERM_EVENT, 0);
 						}
 					} catch (Exception e) {
 						logger.error(e.toString());
@@ -75,6 +110,6 @@ public class TwitterTermsListener extends TwitterEventListener {
 
 	@Override
 	public List<String> getEventNames() {
-		return Arrays.asList(new String[] { TERM_EVENT });
+		return Arrays.asList(new String[] { TERM_EVENT, HASHTAG_EVENT, MENTION_EVENT });
 	}
 }
